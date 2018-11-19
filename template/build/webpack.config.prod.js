@@ -1,5 +1,6 @@
 const path = require('path')
 const paths = require('./paths')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
@@ -7,6 +8,21 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const { css } = require('./webpack.loaders')
 const { Config } = require('webpack-config')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+const ManifestPlugin = require('webpack-manifest-plugin')
+
+const externals = [
+  {
+    module: 'react',
+    entry: '//shadow.elemecdn.com/npm/react@16.2.0/umd/react.production.min.js',
+    global: 'React',
+  },
+  {
+    module: 'react-dom',
+    entry: '//shadow.elemecdn.com/npm/react-dom@16.2.0/umd/react-dom.production.min.js',
+    global: 'ReactDOM',
+  },
+]
 
 module.exports = new Config()
   .extend(path.resolve(paths.appBuild, 'webpack.config.base.js'))
@@ -18,6 +34,10 @@ module.exports = new Config()
         // chunks: 'initial',
         minChunks: 1,
         name: true,
+      },
+      // runtimeChunk: 'single',
+      runtimeChunk: {
+        name: 'runtime',
       },
       minimizer: [
         new UglifyJsPlugin({
@@ -60,9 +80,12 @@ module.exports = new Config()
         chunkFilename: 'static/css/[id].[hash].css',
       }),
       new HtmlWebpackPlugin({
-        template: path.resolve(paths.appSrc, 'index.html'),
+        template: paths.appHtml,
         filename: 'index.html',
       }),
+      new ManifestPlugin(),
+      new HtmlWebpackExternalsPlugin({ externals }),
+      new webpack.HashedModuleIdsPlugin(),
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         reportFilename: 'report.html',

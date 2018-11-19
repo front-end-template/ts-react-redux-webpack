@@ -4,7 +4,6 @@ const tsImportPluginFactory = require('ts-import-plugin')
 module.exports = {
   entry: {
     app: [
-      'babel-polyfill',
       paths.appIndexJs,
     ],
     vendor: ['react', 'react-dom'],
@@ -50,7 +49,7 @@ module.exports = {
           getCustomTransformers: () => ({
             before: [tsImportPluginFactory({
               libraryName: 'antd',
-              libraryDirectory: 'lib',
+              libraryDirectory: 'es',
               style: true,
             })],
           }),
@@ -67,6 +66,13 @@ module.exports = {
         include: paths.appSrc,
       },
       {
+        test: /\.(js|jsx|mjs)$/,
+        include: paths.appSrc,
+        use: {
+          loader: require.resolve('babel-loader'),
+        },
+      },
+      {
         oneOf: [
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -75,43 +81,6 @@ module.exports = {
               limit: 10000,
               name: 'static/assets/[name].[hash:8].[ext]',
             },
-          },
-          {
-            test: /\.(js|jsx|mjs)$/,
-            include: paths.appSrc,
-            loader: require.resolve('babel-loader'),
-            options: {
-              presets: [
-                ['env', {
-                  targets: {
-                    browsers: ['chrome > 40', 'ios > 6', 'android > 4.4'],
-                  },
-                  modules: false,
-                }],
-                'react',
-                'stage-2',
-              ],
-              plugins: [
-                'transform-decorators-legacy',
-                'react-hot-loader/babel',
-                'syntax-dynamic-import',
-              ],
-              cacheDirectory: true,
-            },
-            // options: {
-            //   presets: [
-            //     ['@babel/preset-env', {
-            //       targets: {
-            //         browsers: ['chrome > 50', 'ios > 6', 'android > 4.4'],
-            //       },
-            //       modules: false,
-            //     }],
-            //     '@babel/preset-react',
-            //     '@babel/preset-stage-2',
-            //   ],
-            //   plugins: ['transform-decorators-legacy'],
-            //   cacheDirectory: true,
-            // },
           },
         ],
       },

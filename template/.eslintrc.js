@@ -331,7 +331,10 @@ module.exports = {
       "no-undef": "off",
       "no-unused-expressions": "off",
       "no-use-before-define": "off",
-      "no-useless-constructor": "off"
+      "no-useless-constructor": "off",
+      "no-noninteractive-element-interactions": "off",
+      'jsx-a11y/no-noninteractive-element-interactions': "off",
+      "jsx-a11y/click-events-have-key-events": "off"
     }
   },
 

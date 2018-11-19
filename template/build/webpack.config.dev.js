@@ -1,10 +1,23 @@
 /* eslint-disable function-paren-newline */
-const path = require('path')
 const paths = require('./paths')
 const { css } = require('./webpack.loaders')
 const { Config } = require('webpack-config')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+
+const externals = [
+  {
+    module: 'react',
+    entry: '//shadow.elemecdn.com/npm/react@16.2.0/umd/react.development.js',
+    global: 'React',
+  },
+  {
+    module: 'react-dom',
+    entry: '//shadow.elemecdn.com/npm/react-dom@16.2.0/umd/react-dom.development.js',
+    global: 'ReactDOM',
+  },
+]
 
 module.exports = new Config()
   // .extend(path.resolve(paths.appBuild, 'webpack.config.base.js'))
@@ -24,9 +37,10 @@ module.exports = new Config()
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: path.resolve(paths.appSrc, 'index.html'),
+        template: paths.appHtml,
         filename: 'index.html',
       }),
+      new HtmlWebpackExternalsPlugin({ externals }),
       new webpack.HotModuleReplacementPlugin(),
     ],
     module: {

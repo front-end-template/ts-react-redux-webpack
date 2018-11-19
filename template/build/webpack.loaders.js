@@ -58,7 +58,8 @@ const css = {
               // loader: 'css-loader',
               query: Object.assign({}, css.loaderDefaults, {
                 sourceMap,
-                modules: mod.modules
+                modules: mod.modules,
+                namedExport: true,
               }),
             },
             {
@@ -90,7 +91,8 @@ const css = {
               loader: 'typings-for-css-modules-loader',
               query: Object.assign({}, css.loaderDefaults, {
                 sourceMap,
-                modules: mod.modules
+                modules: mod.modules,
+                namedExport: true,
               }),
             },
             {

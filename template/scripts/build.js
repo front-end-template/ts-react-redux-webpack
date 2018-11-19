@@ -13,7 +13,6 @@ spinner.start()
 rm(paths.appDist, err => {
   if (err) throw err
   webpack(webpackConfig, (err, stats) => {
-
     console.log('process.env.WEBPACK_MODE', process.env.WEBPACK_MODE)
     console.log('process.env.NODE_ENV', process.env.NODE_ENV)
     spinner.stop()
