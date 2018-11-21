@@ -1,15 +1,16 @@
 const path = require('path')
 const paths = require('./paths')
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const { css } = require('./webpack.loaders')
 const { Config } = require('webpack-config')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const ManifestPlugin = require('webpack-manifest-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
-const ManifestPlugin = require('webpack-manifest-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 
 const externals = [
   {
@@ -31,14 +32,11 @@ module.exports = new Config()
     optimization: {
       splitChunks: {
         chunks: 'all',
-        // chunks: 'initial',
         minChunks: 1,
         name: true,
       },
-      // runtimeChunk: 'single',
-      runtimeChunk: {
-        name: 'runtime',
-      },
+      runtimeChunk: 'single',
+      // runtimeChunk: true,
       minimizer: [
         new UglifyJsPlugin({
           cache: true,
@@ -76,14 +74,15 @@ module.exports = new Config()
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'static/css/[name].[hash].css',
-        chunkFilename: 'static/css/[id].[hash].css',
+        filename: 'static/css/[name].[contenthash].css',
+        chunkFilename: 'static/css/[name].[contenthash].css',
       }),
       new HtmlWebpackPlugin({
         template: paths.appHtml,
         filename: 'index.html',
       }),
-      new ManifestPlugin(),
+      new ManifestPlugin({}),
+      new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime~.+[.]js/]),
       new HtmlWebpackExternalsPlugin({ externals }),
       new webpack.HashedModuleIdsPlugin(),
       new BundleAnalyzerPlugin({

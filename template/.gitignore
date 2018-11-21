@@ -2,3 +2,4 @@ node_modules/
 dist/
 *.wap
 *.awcache
+package-lock.json
